@@ -1,42 +1,36 @@
-import { apiRequest } from './client.js';
+// client/src/api/expenses.js
 
-export function uploadExpense(imageFile) {
-  const formData = new FormData();
-  formData.append('image', imageFile);
+import { apiRequest } from './client';   // ← Import from client.js we fixed earlier
 
-  return apiRequest('/api/expenses/upload', {
-    method: 'POST',
-    body: formData,
-  });
-}
+// Fetch all expenses
+export const fetchExpenses = async () => {
+  return apiRequest('/api/expenses');
+};
 
-export function fetchExpenses(filters = {}) {
-  const params = new URLSearchParams();
-
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value !== '' && value != null) {
-      params.append(key, value);
-    }
-  });
-
-  const query = params.toString();
-  const url = query ? `/api/expenses?${query}` : '/api/expenses';
-
-  return apiRequest(url);
-}
-
-export function fetchExpense(id) {
+// Fetch single expense
+export const fetchExpense = async (id) => {
   return apiRequest(`/api/expenses/${id}`);
-}
+};
 
-export function updateExpense(id, payload) {
+// Create new expense
+export const uploadExpense = async (data) => {
+  return apiRequest('/api/expenses', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
+
+// Update expense
+export const updateExpense = async (id, data) => {
   return apiRequest(`/api/expenses/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(data),
   });
-}
+};
 
-export function deleteExpense(id) {
-  return apiRequest(`/api/expenses/${id}`, { method: 'DELETE' });
-}
+// Delete expense
+export const deleteExpense = async (id) => {
+  return apiRequest(`/api/expenses/${id}`, {
+    method: 'DELETE',
+  });
+};
