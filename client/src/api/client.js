@@ -1,14 +1,12 @@
 // client/src/api/client.js
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') || '';
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/+$/, '') || '';
 
 export const apiRequest = async (endpoint, options = {}) => {
   if (!endpoint.startsWith('/')) {
     endpoint = '/' + endpoint;
   }
-
   const url = `${API_BASE}${endpoint}`;
-
+  
   const response = await fetch(url, {
     ...options,
     headers: {
