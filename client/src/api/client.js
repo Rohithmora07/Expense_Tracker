@@ -1,15 +1,22 @@
-// Option A - if NEXT_PUBLIC_API_URL ends without /api
-const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/expenses`)
+// client/src/api/client.js
 
-// Option B - cleaner (recommended)
-const API_BASE = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, ''); // remove trailing slash
-const res = await fetch(`${API_BASE}/api/expenses`);
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') || '';
 
-/**
- * Shared fetch wrapper for the Express API.
- */
-export async function apiRequest(url, options = {}) {
-  const response = await fetch(url, options);
+export const apiRequest = async (endpoint, options = {}) => {
+  if (!endpoint.startsWith('/')) {
+    endpoint = '/' + endpoint;
+  }
+
+  const url = `${API_BASE}${endpoint}`;
+
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
   const body = await response.json().catch(() => ({}));
 
   if (!response.ok) {
@@ -17,4 +24,4 @@ export async function apiRequest(url, options = {}) {
   }
 
   return body;
-}
+};
